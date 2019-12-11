@@ -4,7 +4,8 @@
   "description": "bamazon is a mock version of amazon using MYSQL and NODE",
   "main": "bamazonCustomer.js",
   "dependencies": {
-    "inquirer": "^7.0.0"
+    "inquirer": "^7.0.0",
+    "mysql": "^2.17.1"
   },
   "devDependencies": {},
   "scripts": {
