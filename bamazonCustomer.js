@@ -1,11 +1,16 @@
+//TODO: LOOP THROUGH THE PRODUCT ITEM ID TO MAKE SURE IT IS ABLE TO BE PURCHASED
+
+
+
+
+
+
 ////require inquirer
 // console.log("Hello");
 const mysql = require("mysql");
 const inquirer = require('inquirer');
 //////FOR TABLE
-const {
-  table
-} = require("table");
+const {table} = require("table");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -22,8 +27,6 @@ connection.connect(function (err) {
   productDisplay();
 
 });
-
-
 ////// PRODUCT DISPLAY FROM TABLE 
 function productDisplay() {
   connection.query("SELECT * FROM products", function (err, res) {
@@ -48,10 +51,8 @@ function productDisplay() {
         type: 'confirm',
         name: 'confirm',
         message: 'Ready to shop the Bamazon products?'
-
       }).then(function (answer) {
         if (answer.confirm === true) {
-          // console.log(' THIS WAS A CONFIRMATION')
           userAction();
         } else {
           console.log('\n' + "-".repeat(122) + '\n\nThats ok, we hope to see you again!' + '\n\n' + "-".repeat(122) + '\n');
@@ -61,36 +62,75 @@ function productDisplay() {
 
   })
 };
-
-
-
 ////////// INQUIRER PROMPT 
 function userAction() {
+  connection.query("SELECT * FROM products", function (err, res) {
+    if (err) throw err;
+    const data = res.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
+    const productsTable = [
+      ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
+      ...data
+    ];
   inquirer
-    .prompt({
+    .prompt([
+      {
       name: "action",
       type: "input",
-      message: "Would you like to buy from Bamazon? Please enter the [Item ID] of the product",
+      message: "What would you like to buy from Bamazon? Please enter the [Item ID] of the product or [Q] to Quit",
       validate: function (value) {
-        if (isNaN(value) === false) {
+        if (isNaN(value) === false && value>0 && value<res.length+1) {
           return true;
-        }
+        }else if(value === 'Q') {
+          connection.end();
+        }else{
         console.log('\n\nOops, you did not enter a valid ID, please enter a valid [Item ID]\n')
         return false;
       }
+    }
+  },
+  {
+      name: "quantity",
+      type: "input",
+      message: "How many would you like to buy? or [Q] to Quit",
+      validate: function (value) {
+        if (isNaN(value) === false) {
+          return true;
+        }else if(value === 'Q') {
+          connection.end();
+        }else{
+        console.log('\n\nOops, you did not enter a valid amount, please enter a valid quantity\n')
+        return false;
+      }
+    }
+  }
+  ]).then(function (answer) {
+    let chosenProduct;
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].item_id === parseInt(answer.action)) {
+          chosenProduct = res[i];
+        }
+      }
+    if(parseInt(chosenProduct.stock_quantity) < parseInt(answer.quantity)){
+      console.log(`\n\nInsifficient stocked quantity of ${chosenProduct.product_name}`)
+      productDisplay();
+    }else {
+      connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+          {
+            stock_quantity: (parseInt(chosenProduct.stock_quantity) - parseInt(answer.quantity))
+          },
+          {
+            item_id: parseInt(answer.action)
+          }
+        ],
+        function(error) {
+          if (error) throw err;
+    }
+      
+    );
+};
+});
+  })
+};
 
-    })
-    .then(function (answer) {
-      // // based on their answer, either call the bid or the post functions
-      // if (answer.postOrBid === "POST") {
-      //   postAuction();
-      // }
-      // else if(answer.postOrBid === "BID") {
-      //   bidAuction();
-      // } else{
-      //   connection.end();
-      // }
-    });
-
-
-}
