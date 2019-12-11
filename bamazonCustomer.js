@@ -10,7 +10,9 @@
 const mysql = require("mysql");
 const inquirer = require('inquirer');
 //////FOR TABLE
-const {table} = require("table");
+const {
+  table
+} = require("table");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -71,66 +73,69 @@ function userAction() {
       ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
       ...data
     ];
-  inquirer
-    .prompt([
-      {
-      name: "action",
-      type: "input",
-      message: "What would you like to buy from Bamazon? Please enter the [Item ID] of the product or [Q] to Quit",
-      validate: function (value) {
-        if (isNaN(value) === false && value>0 && value<res.length+1) {
-          return true;
-        }else if(value === 'Q') {
-          connection.end();
-        }else{
-        console.log('\n\nOops, you did not enter a valid ID, please enter a valid [Item ID]\n')
-        return false;
-      }
-    }
-  },
-  {
-      name: "quantity",
-      type: "input",
-      message: "How many would you like to buy? or [Q] to Quit",
-      validate: function (value) {
-        if (isNaN(value) === false) {
-          return true;
-        }else if(value === 'Q') {
-          connection.end();
-        }else{
-        console.log('\n\nOops, you did not enter a valid amount, please enter a valid quantity\n')
-        return false;
-      }
-    }
-  }
-  ]).then(function (answer) {
-    let chosenProduct;
-      for (let i = 0; i < res.length; i++) {
-        if (res[i].item_id === parseInt(answer.action)) {
-          chosenProduct = res[i];
-        }
-      }
-    if(parseInt(chosenProduct.stock_quantity) < parseInt(answer.quantity)){
-      console.log(`\n\nInsifficient stocked quantity of ${chosenProduct.product_name}`)
-      productDisplay();
-    }else {
-      connection.query(
-        "UPDATE products SET ? WHERE ?",
-        [
-          {
-            stock_quantity: (parseInt(chosenProduct.stock_quantity) - parseInt(answer.quantity))
-          },
-          {
-            item_id: parseInt(answer.action)
+    inquirer
+      .prompt([{
+          name: "action",
+          type: "input",
+          message: "What would you like to buy from Bamazon? Please enter the [Item ID] of the product or [Q] to Quit",
+          validate: function (value) {
+            if (isNaN(value) === false && value > 0 && value < res.length + 1) {
+              return true;
+            } else if (value === 'Q') {
+              connection.end();
+            } else {
+              console.log('\n\nOops, you did not enter a valid ID, please enter a valid [Item ID]\n')
+              return false;
+            }
           }
-        ],
-        function(error) {
-          if (error) throw err;
-    }
-      
-    );
-};
-});
+        },
+        {
+          name: "quantity",
+          type: "input",
+          message: "How many would you like to buy? or [Q] to Quit",
+          validate: function (value) {
+            if (isNaN(value) === false) {
+              return true;
+            } else if (value === 'Q') {
+              connection.end();
+            } else {
+              console.log('\n\nOops, you did not enter a valid amount, please enter a valid quantity\n')
+              return false;
+            }
+          }
+        }
+      ]).then(function (answer) {
+        let chosenProduct;
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].item_id === parseInt(answer.action)) {
+            chosenProduct = res[i];
+          }
+        }
+        if (parseInt(chosenProduct.stock_quantity) < parseInt(answer.quantity)) {
+          console.log(`\n\nInsifficient stocked quantity of ${chosenProduct.product_name}`)
+          productDisplay();
+        } else {
+          connection.query(
+            "UPDATE products SET ? WHERE ?",
+            [{
+                stock_quantity: (parseInt(chosenProduct.stock_quantity) - parseInt(answer.quantity))
+              },
+              {
+                item_id: parseInt(answer.action)
+              }
+            ],
+            function (error) {
+              if (error) throw err;
+              let totalPurchase = (parseInt(answer.quantity))*(chosenProduct.price)
+              /////////////RECIPET FOR CUSTOMER//////////////////////
+              console.log('\n\n' + "-".repeat(122) 
+              + '\n\nYou Purchased: ' + 
+              '('+answer.quantity+')' + "" + chosenProduct.product_name+ '\n\nYour Total: ' + '$'+totalPurchase)
+              productDisplay();
+            }
+
+          );
+        };
+      });
   })
 };
-
