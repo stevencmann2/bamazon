@@ -114,7 +114,7 @@ function quit() {
 //// LOW INVENTORY 
 function lowInventory() {
 //     search = "stock_quantity < 6"
-    connection.query("SELECT * FROM products WHERE stock_quantity < 6 ", function (err, res) {
+    connection.query("SELECT * FROM products WHERE ?", ["stock_quantity < 6"], function (err, res) {
         if (err) throw err;
         const data = res.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
         const productsTable = [
@@ -162,7 +162,7 @@ function addInventory() {
             .then(function (answer) {
                 // get the information of the chosen item
                 let chosenItem;
-    
+        
                 for (let i = 0; i < results.length; i++) {
                     if (results[i].product_name === answer.choice) {
                         chosenItem = results[i];
@@ -170,18 +170,21 @@ function addInventory() {
                     
                 }
                 if (chosenItem.product_name === answer.choice) {
+                    let newstock;
                     connection.query(
                         `UPDATE products SET ? WHERE ?`,
                         [{
-                                stock_quantity: (parseInt(answer.amount) + parseInt(chosenItem.stock_quantity))
+                                stock_quantity: newstock = (parseInt(answer.amount) + parseInt(chosenItem.stock_quantity))
                             },
                             {
-                                id: chosenItem.item_id
+                                product_name: answer.choice
                             }
                         ],
                         function (error) {
                             if (error) throw err;
-                            console.log("\n\n" + chosenItem.product_name + ' now has ' + chosenItem.stock_quantity + ' in stock');
+                            console.log("-".repeat(122) + '\n');
+                            console.log("\n\nStock Updated Succesfully, " + chosenItem.product_name + ' now has ' + '('+newstock+')' + ' in stock\n\n');
+                            console.log("-".repeat(122) + '\n');
                             manager();
                         }
                     );
@@ -194,3 +197,4 @@ function addInventory() {
 }
 
 //add PRODUCT
+
