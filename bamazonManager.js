@@ -2,7 +2,6 @@ TODO:
     //List a set of menu options:
 
     // View Low Inventory ------------- DEBUG WHERE ?????????
-    // Add to Inventory ------- unknown error?????????
     // Add New Product
     // Quit
 
@@ -80,6 +79,7 @@ function manager() {
         });
 };
 
+
 /// VIEW PRODUCTS FOR SALE 
 
 function viewProducts() {
@@ -113,15 +113,15 @@ function quit() {
 // ["stock_quantity < 6"]
 //// LOW INVENTORY 
 function lowInventory() {
-//     search = "stock_quantity < 6"
-    connection.query("SELECT * FROM products WHERE ?", ["stock_quantity < 6"], function (err, res) {
+    //     search = "stock_quantity < 6"
+    connection.query("SELECT * FROM products WHERE stock_quantity < 6", function (err, res) {
         if (err) throw err;
         const data = res.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
         const productsTable = [
             ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
             ...data
         ];
-        console.log('\n\nHere is what is running a little low in stock Mr. Manager\n\n' + table(productsTable) + '\n\n');
+        console.log('\n\n'+"-".repeat(122) + '\n\nATTENTION: Low Inventory Detected For The Following Items\n\n'+ "-".repeat(122) +'\n\n'+ table(productsTable) + '\n\n');
         manager();
     })
 
@@ -131,6 +131,13 @@ function lowInventory() {
 function addInventory() {
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
+        const data = results.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
+        const productsTable = [
+          ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
+          ...data
+        ];
+        console.log('\n\n'+"-".repeat(122) + '\n\nWelcome to Add Inventory Mode\n\n'+ "-".repeat(122));
+        console.log('\n\n' + table(productsTable) + '\n\n');
         inquirer
             .prompt([{
                     name: "choice",
@@ -162,12 +169,12 @@ function addInventory() {
             .then(function (answer) {
                 // get the information of the chosen item
                 let chosenItem;
-        
+
                 for (let i = 0; i < results.length; i++) {
                     if (results[i].product_name === answer.choice) {
                         chosenItem = results[i];
                     }
-                    
+
                 }
                 if (chosenItem.product_name === answer.choice) {
                     let newstock;
@@ -183,13 +190,15 @@ function addInventory() {
                         function (error) {
                             if (error) throw err;
                             console.log("-".repeat(122) + '\n');
-                            console.log("\n\nStock Updated Succesfully, " + chosenItem.product_name + ' now has ' + '('+newstock+')' + ' in stock\n\n');
+                            console.log("\n\nStock Updated Succesfully, " + chosenItem.product_name + ' now has ' + '(' + newstock + ')' + ' in stock\n\n');
                             console.log("-".repeat(122) + '\n');
                             manager();
                         }
                     );
                 } else {
-                    console.log("something didnt go right, please try again");
+                    console.log("-".repeat(122) + '\n\n');
+                    console.log("something didnt go right, please try again\n\n");
+                    console.log("-".repeat(122) + '\n');
                     manager();
                 }
             });
@@ -197,4 +206,3 @@ function addInventory() {
 }
 
 //add PRODUCT
-
