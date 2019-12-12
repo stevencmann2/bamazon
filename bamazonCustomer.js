@@ -1,13 +1,7 @@
-//TODO: LOOP THROUGH THE PRODUCT ITEM ID TO MAKE SURE IT IS ABLE TO BE PURCHASED
-
-
-
-
-
-
-////require inquirer
-// console.log("Hello");
-const mysql = require("mysql");
+TODO: //ADD CHALK
+  ////require inquirer
+  // console.log("Hello");
+  var mysql = require("mysql");
 const inquirer = require('inquirer');
 //////FOR TABLE
 const {
@@ -126,11 +120,11 @@ function userAction() {
             ],
             function (error) {
               if (error) throw err;
-              let totalPurchase = (parseInt(answer.quantity))*(chosenProduct.price)
+              let totalPurchase = (parseInt(answer.quantity)) * (chosenProduct.price)
               /////////////RECIPET FOR CUSTOMER//////////////////////
-              console.log('\n\n' + "-".repeat(122) 
-              + '\n\nYou Purchased: ' + 
-              '('+answer.quantity+')' + "" + chosenProduct.product_name+ '\n\nYour Total: ' + '$'+totalPurchase)
+              console.log('\n\n' + "-".repeat(122) +
+                '\n\nYou Purchased: ' +
+                '(' + answer.quantity + ')' + " " + chosenProduct.product_name +'\n\nAdded to Your Cart' + '\n\nYour Total: ' + '$' + totalPurchase )
               productDisplay();
             }
 
