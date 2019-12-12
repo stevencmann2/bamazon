@@ -64,8 +64,8 @@ function manager() {
 
                         break;
                     case ('Add New Product'):
-                        // addProduct()
-                        // manager();
+                        addProduct()
+                        
                         break;
                     case ('Leave Manager Mode'):
                         quit();
@@ -114,7 +114,7 @@ function quit() {
 //// LOW INVENTORY 
 function lowInventory() {
     //     search = "stock_quantity < 6"
-    connection.query("SELECT * FROM products WHERE stock_quantity < 6", function (err, res) {
+    connection.query("SELECT * FROM products WHERE ? < 6", ["stock_quantity"], function (err, res) {
         if (err) throw err;
         const data = res.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
         const productsTable = [
@@ -206,3 +206,48 @@ function addInventory() {
 }
 
 //add PRODUCT
+
+function addProduct(){
+    inquirer
+    .prompt([
+    {
+        type: 'input',
+        name: 'name',
+        message: "What is the name of the product you would like to add ?"
+      },
+      {
+        type: 'input',
+        name: 'category',
+        message: "What category does this product fall under ?"
+      },
+      {
+        type: 'input',
+        name: 'price',
+        message: "What is the unit price of the item ?",
+        validate: function (value) {
+            if (isNaN(value) === false && value > 0) {
+                return true;
+            } else {
+                console.log('\n\nOops, you did not enter a valid number, please enter a valid [number]\n')
+                return false;
+            }
+        }
+      },
+      {
+        type: 'input',
+        name: 'quantity',
+        message: "How much of the product would you like to stock ?",
+        validate: function (value) {
+            if (isNaN(value) === false && value > 0) {
+                return true;
+            } else {
+                console.log('\n\nOops, you did not enter a valid number, please enter a valid [number]\n')
+                return false;
+            }
+        }
+      },
+
+
+])
+};
+
