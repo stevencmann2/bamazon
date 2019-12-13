@@ -1,9 +1,9 @@
 TODO:
     //List a set of menu options:
 
-    // View Low Inventory ------------- DEBUG WHERE ?????????
-    // Add New Product
-    // Quit
+    // Add New Product --------- QUERIES AND VALIDATING BASED ON EXISTING PRODUCT NAME 
+
+
 
     var mysql = require("mysql");
 const inquirer = require('inquirer');
@@ -65,7 +65,7 @@ function manager() {
                         break;
                     case ('Add New Product'):
                         addProduct()
-                        
+
                         break;
                     case ('Leave Manager Mode'):
                         quit();
@@ -113,15 +113,16 @@ function quit() {
 // ["stock_quantity < 6"]
 //// LOW INVENTORY 
 function lowInventory() {
-    //     search = "stock_quantity < 6"
-    connection.query("SELECT * FROM products WHERE ? < 6", ["stock_quantity"], function (err, res) {
+
+
+    connection.query("SELECT * FROM products WHERE stock_quantity < 6", function (err, res) {
         if (err) throw err;
         const data = res.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
         const productsTable = [
             ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
             ...data
         ];
-        console.log('\n\n'+"-".repeat(122) + '\n\nATTENTION: Low Inventory Detected For The Following Items\n\n'+ "-".repeat(122) +'\n\n'+ table(productsTable) + '\n\n');
+        console.log('\n\n' + "-".repeat(122) + '\n\nATTENTION: Low Inventory Detected For The Following Items\n\n' + "-".repeat(122) + '\n\n' + table(productsTable) + '\n\n');
         manager();
     })
 
@@ -133,10 +134,10 @@ function addInventory() {
         if (err) throw err;
         const data = results.map((products) => [products.item_id, products.product_name, products.department_name, products.price, products.stock_quantity]);
         const productsTable = [
-          ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
-          ...data
+            ['Item ID', 'Product Name', 'Department', 'Price', 'Left in Stock'],
+            ...data
         ];
-        console.log('\n\n'+"-".repeat(122) + '\n\nWelcome to Add Inventory Mode\n\n'+ "-".repeat(122));
+        console.log('\n\n' + "-".repeat(122) + '\n\nWelcome to Add Inventory Mode\n\n' + "-".repeat(122));
         console.log('\n\n' + table(productsTable) + '\n\n');
         inquirer
             .prompt([{
@@ -205,49 +206,62 @@ function addInventory() {
     });
 }
 
-//add PRODUCT
+// add PRODUCT
 
-function addProduct(){
-    inquirer
-    .prompt([
-    {
-        type: 'input',
-        name: 'name',
-        message: "What is the name of the product you would like to add ?"
-      },
-      {
-        type: 'input',
-        name: 'category',
-        message: "What category does this product fall under ?"
-      },
-      {
-        type: 'input',
-        name: 'price',
-        message: "What is the unit price of the item ?",
-        validate: function (value) {
-            if (isNaN(value) === false && value > 0) {
-                return true;
-            } else {
-                console.log('\n\nOops, you did not enter a valid number, please enter a valid [number]\n')
-                return false;
+function addProduct() {
+    inquirer.prompt([{
+            type: 'input',
+            name: 'name',
+            message: "What is the name of the product you would like to add ?"
+        },
+        {
+            type: 'list',
+            name: 'category',
+            message: "What category does this product fall under ?",
+            choices: ["Food & Grocery", "Books and Audible", "Sports and Outdoors", "Pet Supplies", "Automotive and Industrial", "Toys, Kids, and Baby", "Smart Home", "Beauty and Health", "Movies, Music and Games", "Gift Cards", "Clothing, Shoes, Jewelry & Watches", "Electronics, Computers & Office", "Home, Garden & Tools", "Handmade", "Other"]
+        },
+        {
+            type: 'input',
+            name: 'price',
+            message: "What is the unit price of the item [decimal form] example: [1.25] ?",
+            validate: function (value) {
+                if (isNaN(value) === false && value > 0) {
+                    return true;
+                } else {
+                    console.log('\n\nOops, you did not enter a valid number, please enter a valid [number]\n')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: "How much of the product would you like to stock ?",
+            validate: function (value) {
+                if (isNaN(value) === false && value > 0) {
+                    return true;
+                } else {
+                    console.log('\n\nOops, you did not enter a valid number, please enter a valid [number]\n')
+                    return false;
+                }
             }
         }
-      },
-      {
-        type: 'input',
-        name: 'quantity',
-        message: "How much of the product would you like to stock ?",
-        validate: function (value) {
-            if (isNaN(value) === false && value > 0) {
-                return true;
-            } else {
-                console.log('\n\nOops, you did not enter a valid number, please enter a valid [number]\n')
-                return false;
+    ]).then(function (answer) {
+        connection.query(
+            "INSERT INTO products SET ?", {
+                product_name: answer.name,
+                department_name: answer.category,
+                price: answer.price || 1,
+                stock_quantity: answer.quantity || 1
+            },
+            function (err) {
+                if (err) throw err;
+                console.log("-".repeat(122) + '\n\n');
+                console.log(answer.name + " was added successfully!\n\n");
+                console.log("-".repeat(122) + '\n\n');
+                manager();
             }
-        }
-      },
+        );
+    });
 
-
-])
 };
-

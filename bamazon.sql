@@ -1,15 +1,15 @@
 -- Create DB bamazon
-DROP DATABASE IF EXISTS bamazon;
-CREATE DATABASE bamazon;
+DROP DATABASE IF EXISTS bamazon_db;
+CREATE DATABASE bamazon_db;
 
-USE bamazon;
+USE bamazon_db;
 -- Create table of products 
 
 CREATE TABLE products(
 item_id INTEGER AUTO_INCREMENT NOT NULL,
-product_name VARCHAR (100),
-department_name VARCHAR (30),
-price DECIMAL (13, 2),
+product_name VARCHAR (100) NOT NULL,
+department_name VARCHAR (100) NOT NULL,
+price DECIMAL (13, 2) NOT NULL,
 stock_quantity INTEGER,
 PRIMARY KEY (item_id)
 );
