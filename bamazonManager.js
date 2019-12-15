@@ -1,11 +1,4 @@
-TODO:
-    //List a set of menu options:
-
-    // Add New Product --------- QUERIES AND VALIDATING BASED ON EXISTING PRODUCT NAME 
-
-
-
-    var mysql = require("mysql");
+var mysql = require("mysql");
 const inquirer = require('inquirer');
 //////FOR TABLE
 const {
@@ -16,14 +9,12 @@ const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    ///////// .ENV EVENTUALLY
     password: "phish",
     database: "bamazon_db"
 });
 // connect to the mysql server and sql database
 connection.connect(function (err) {
     if (err) throw err;
-    // run manager function as prompt
     manager();
 });
 
@@ -110,7 +101,7 @@ function quit() {
     connection.end();
 }
 
-// ["stock_quantity < 6"]
+
 //// LOW INVENTORY 
 function lowInventory() {
 
@@ -168,7 +159,7 @@ function addInventory() {
                 }
             ])
             .then(function (answer) {
-                // get the information of the chosen item
+            
                 let chosenItem;
 
                 for (let i = 0; i < results.length; i++) {
