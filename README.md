@@ -17,3 +17,10 @@ What languages is it written with? Javascript, MySQL
 Future Development
 
 I woulld eventually like to complete the third and final use of the bamazon app, in supervisor mode. 
+
+Using the app:
+
+![Image 1 of bamazon Customer Mode](./bamazonCustomer1.png)
+![Image 2 of bamazon Customer Mode](./bamazonCustomer2.png)
+![Image 1 of bamazon Manger Mode](./bamazonManager1.png)
+![Image 2 of bamazon Manager Mode](./bamazonManager2.png)
