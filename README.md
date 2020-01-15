@@ -20,8 +20,7 @@ LinkedIn: https://www.linkedin.com/in/steven-mann-b54494a6/
 * Inquier npm package
 
 **Instructions**
-* Please clone my repositpry 
- ** Instructions to clone a repo:(https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
+* Please clone my repository (https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 * npm install in your terminal 
 * Run one of the following commands in the terminal 
  ** Bamazon Customer 
@@ -39,4 +38,3 @@ I woulld eventually like to complete the third and final use of the bamazon app,
 ![Image 1 of bamazon Manger Mode](./bamazonManager1.png)
 ![Image 2 of bamazon Manager Mode](./bamazonManager2.png)
 
-** 
