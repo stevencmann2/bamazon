@@ -14,7 +14,19 @@ LinkedIn: https://www.linkedin.com/in/steven-mann-b54494a6/
 
 **What languages is it written with? **
 
-Javascript, MySQL
+* Javascript
+* MySQL
+* Node.js
+* Inquier npm package
+
+**Instructions**
+* Please clone my repositpry 
+ ** Instructions to clone a repo:(https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
+* npm install in your terminal 
+* Run one of the following commands in the terminal 
+ ** Bamazon Customer 
+ ** Bamazon Manager 
+
 
 **Future Development**
 
@@ -26,3 +38,5 @@ I woulld eventually like to complete the third and final use of the bamazon app,
 ![Image 2 of bamazon Customer Mode](./bamazonCustomer2.png)
 ![Image 1 of bamazon Manger Mode](./bamazonManager1.png)
 ![Image 2 of bamazon Manager Mode](./bamazonManager2.png)
+
+** 
