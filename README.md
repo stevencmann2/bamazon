@@ -12,7 +12,7 @@ Portfolio: https://stevencmann2.github.io/Responsive-Portfolio/
 Github: https://github.com/stevencmann2
 LinkedIn: https://www.linkedin.com/in/steven-mann-b54494a6/
 
-**What languages is it written with? **
+**Tech Used**
 
 * Javascript
 * MySQL
